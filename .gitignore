@@ -1,0 +1,33 @@
+# macOS
+.DS_Store
+
+# Node / JS
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# React Native / Metro
+.expo/
+.bundle/
+dist/
+build/
+
+# Android
+android/.gradle/
+android/app/build/
+android/build/
+android/local.properties
+*.keystore
+*.jks
+
+# iOS
+ios/Pods/
+ios/build/
+ios/DerivedData/
+*.xcuserdata/
+*.xcuserstate
+
+# IDEs
+.vscode/
+.idea/

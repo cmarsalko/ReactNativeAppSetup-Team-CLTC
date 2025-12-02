@@ -1,0 +1,1 @@
+/Users/cmarsalko/Documents/HelloNative/android/app/build/intermediates/cxx/Debug/1a3i1q71/obj/x86_64
