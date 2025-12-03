@@ -32,6 +32,9 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+<<<<<<< HEAD
 
+=======
+>>>>>>> 452cf00 (Add proper gitignore and clean Android build artifacts)
     </application>
 </manifest>

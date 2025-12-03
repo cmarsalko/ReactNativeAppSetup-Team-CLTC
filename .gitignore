@@ -6,28 +6,25 @@ node_modules/
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
+package-lock.json
 
-# React Native / Metro
-.expo/
-.bundle/
-dist/
-build/
-
-# Android
+# React Native / Android
 android/.gradle/
+android/.idea/
 android/app/build/
-android/build/
 android/local.properties
-*.keystore
-*.jks
+android/app/.cxx/
+*.iml
 
-# iOS
+# React Native / iOS
 ios/Pods/
 ios/build/
-ios/DerivedData/
-*.xcuserdata/
-*.xcuserstate
+*.xcworkspace
+*.xcuserdatad
+*.xcuserdata
 
-# IDEs
-.vscode/
-.idea/
+# Metro / bundler / cache
+.expo/
+.expo-shared/
+dist/
+.cache/ø
