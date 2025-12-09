@@ -1,8 +1,23 @@
-<<<<<<< HEAD
-import React, { useState, useRef, useMemo } from 'react';
-=======
 import React, {useState, useRef, useMemo} from 'react';
->>>>>>> 452cf00 (Add proper gitignore and clean Android build artifacts)
+import routesData from './pgh_bus_routes.json';
+
+type BusStop = {
+  stop_id: string;
+  stop_name: string;
+  address: string;
+  arrival_times: string[];
+};
+
+type BusDirection = {
+  direction: string;
+  stops: BusStop[];
+};
+
+type BusRoute = {
+  route_id: string;
+  route_name: string;
+  directions: BusDirection[];
+};
 import {
   SafeAreaView,
   View,
@@ -10,153 +25,86 @@ import {
   Pressable,
   StyleSheet,
 } from 'react-native';
-<<<<<<< HEAD
-import BottomSheet from '@gorhom/bottom-sheet';
-import { GestureHandlerRootView } from 'react-native-gesture-handler';
-=======
-import MapView, {Marker, PROVIDER_GOOGLE} from 'react-native-maps';
+import {useSafeAreaInsets} from 'react-native-safe-area-context';
+import MapView, {Marker, PROVIDER_GOOGLE, Region} from 'react-native-maps';
 import BottomSheet, {
   BottomSheetScrollView,
   BottomSheetModalProvider,
 } from '@gorhom/bottom-sheet';
 import {GestureHandlerRootView} from 'react-native-gesture-handler';
->>>>>>> 452cf00 (Add proper gitignore and clean Android build artifacts)
 
 type Screen = 'home' | 'whereTo' | 'favoriteLines' | 'savedLocations';
 
 export default function App() {
-  const [screen, setScreen] = useState<Screen>('home');git 
-  const bottomSheetRef = useRef<BottomSheet>(null);
+  const insets = useSafeAreaInsets();
+  const [screen, setScreen] = useState<Screen>('home');
 
-  const snapPoints = useMemo(() => ['25%', '50%', '90%'], []);
+  // Map region state
+  const [region, setRegion] = useState<Region>({
+    latitude: 40.4444,
+    longitude: -79.954,
+    latitudeDelta: 0.005,
+    longitudeDelta: 0.005,
+  });
 
+  // Map ref so we can animate zoom
+  const mapRef = useRef<MapView | null>(null);
 
-  const sheetRef = useRef<BottomSheet>(null);
-  const snapPoints = useMemo(() => ['45%', '80%'], []); // 45% + 80% of screen height
+  // Bottom sheet ref
+  const sheetRef = useRef<BottomSheet | null>(null);
+  // Snap points for the sheet
+  const snapPoints = useMemo(() => ['6%', '45%', '80%'], []);
+
+    const routes: BusRoute[] = (routesData as {routes: BusRoute[]}).routes;
+    const nearbyRoutes = routes.slice(0, 3);
+    const otherRoutes = routes.slice(3);
+
+  const handleZoom = (direction: 'in' | 'out') => {
+    setRegion(prev => {
+      const factor = direction === 'in' ? 0.5 : 2; // zoom in = closer, zoom out = farther
+      const next: Region = {
+        ...prev,
+        latitudeDelta: prev.latitudeDelta * factor,
+        longitudeDelta: prev.longitudeDelta * factor,
+      };
+
+      if (mapRef.current) {
+        mapRef.current.animateToRegion(next, 200);
+      }
+
+      return next;
+    });
+  };
+
+  const handleOpenWhereTo = () => {
+    setScreen('whereTo');
+    if (sheetRef.current) {
+      sheetRef.current.snapToIndex(2); // snap to 80%
+    }
+  };
+
+  const handleBackToHome = () => {
+    setScreen('home');
+    if (sheetRef.current) {
+      sheetRef.current.snapToIndex(1); // snap back to mid position
+    }
+  };
 
   return (
-<<<<<<< HEAD
-    <GestureHandlerRootView style={{ flex: 1 }}>
-      <SafeAreaView style={styles.safe}>
-        {/* ---------- HOME SCREEN ---------- */}
-        {screen === 'home' && (
-          <View style={{ flex: 1 }}>
-            {/* Map / Header */}
-            <View style={styles.fakeMapHeader}>
-              <View style={styles.topRow} />
-
-              <Pressable
-                style={styles.searchPill}
-                onPress={() => setScreen('whereTo')}
-              >
-                <Text style={styles.searchPillText}>Where to?</Text>
-              </Pressable>
-            </View>
-
-            {/* Bottom Sheet */}
-            <BottomSheet
-              ref={bottomSheetRef}
-              index={0}
-              snapPoints={snapPoints}
-              enablePanDownToClose={true}
-              keyboardBehavior="interactive"
-              style={{ flex: 1 }}
-            >
-              <ScrollView
-                showsVerticalScrollIndicator={false}
-                contentContainerStyle={{ padding: 16, paddingBottom: 40 }}
-              >
-                <View style={styles.handleBar} />
-
-                <Text style={styles.section}>Favorites</Text>
-
-                <View style={styles.card}>
-                  <Text style={styles.cardTitle}>71C – Fifth Ave</Text>
-                  <Text style={styles.cardSub}>Fifth Ave → Tennyson Ave</Text>
-                  <Text style={styles.cardTime}>1 min • Next bus</Text>
-                </View>
-
-                <View style={styles.card}>
-                  <Text style={styles.cardTitle}>71A – Negley</Text>
-                  <Text style={styles.cardSub}>Craig St → Centre Ave</Text>
-                  <Text style={styles.cardTime}>2 min • Next bus</Text>
-                </View>
-
-                <Text style={styles.section}>Nearby Routes</Text>
-
-                <View style={styles.card}>
-                  <Text style={styles.cardTitle}>54D – 5th Ave</Text>
-                  <Text style={styles.cardSub}>Blvd of Allies → Oakland</Text>
-                  <Text style={styles.cardTime}>12 min • Next bus</Text>
-                </View>
-
-                <View style={styles.quickRow}>
-                  <Pressable
-                    style={styles.quickBtn}
-                    onPress={() => setScreen('favoriteLines')}
-                  >
-                    <Text style={styles.quickText}>Transit Lines</Text>
-                  </Pressable>
-
-                  <Pressable
-                    style={styles.quickBtn}
-                    onPress={() => setScreen('savedLocations')}
-                  >
-                    <Text style={styles.quickText}>Saved Locations</Text>
-                  </Pressable>
-                </View>
-              </ScrollView>
-            </BottomSheet>
-          </View>
-        )}
-
-        {/* ---------- OTHER SCREENS ---------- */}
-        {screen !== 'home' && (
-          <View style={{ flex: 1 }}>
-            <View style={styles.content}>
-              <View style={styles.headerRow}>
-                <Pressable onPress={() => setScreen('home')} style={{ width: 40 }}>
-                  <Text style={styles.backIcon}>‹</Text>
-                </Pressable>
-                <Text style={styles.headerTitle}>
-                  {screen === 'whereTo'
-                    ? 'Where to?'
-                    : screen === 'favoriteLines'
-                    ? 'Favorite Lines'
-                    : 'Saved Locations'}
-                </Text>
-                <Text style={styles.plusText}>＋</Text>
-              </View>
-
-              <ScrollView
-                style={{ flex: 1 }}
-                contentContainerStyle={{ padding: 16, paddingBottom: 40 }}
-              >
-                <Text>Your {screen} content here...</Text>
-              </ScrollView>
-            </View>
-          </View>
-        )}
-      </SafeAreaView>
-=======
     <GestureHandlerRootView style={{flex: 1}}>
       <BottomSheetModalProvider>
         <SafeAreaView style={styles.safe}>
-          {/* ---------- HOME ---------- */}
-          {screen === 'home' && (
+          {/* ---------- HOME + WHERE TO OVERLAY ---------- */}
+          {(screen === 'home' || screen === 'whereTo') && (
             <View style={styles.homeContainer}>
               {/* Full-screen map */}
               <MapView
+                ref={mapRef}
                 provider={PROVIDER_GOOGLE}
                 style={StyleSheet.absoluteFillObject}
-                initialRegion={{
-                  latitude: 40.4444,
-                  longitude: -79.954,
-                  // smaller deltas = more zoomed in
-                  latitudeDelta: 0.005,
-                  longitudeDelta: 0.005,
-                }}
-                // shift the camera up visually so marker is closer to center
+                initialRegion={region}
+                region={region}
+                onRegionChangeComplete={setRegion}
                 mapPadding={{top: 0, right: 0, bottom: 220, left: 0}}
                 paddingAdjustmentBehavior="always">
                 <Marker
@@ -166,16 +114,32 @@ export default function App() {
                 />
               </MapView>
 
-              {/* Floating search pill */}
-              <Pressable
-                style={styles.searchPill}
-                onPress={() => setScreen('whereTo')}>
-                <View style={styles.searchPillInner}>
-                  <Text style={styles.searchPillIcon}>🔍</Text>
-                  <Text style={styles.searchPillText}>Where to?</Text>
-                  <Text style={styles.searchPillChevron}>›</Text>
-                </View>
-              </Pressable>
+              {/* Zoom controls */}
+              <View style={styles.zoomControls}>
+                <Pressable
+                  style={styles.zoomBtn}
+                  onPress={() => handleZoom('in')}>
+                  <Text style={styles.zoomText}>＋</Text>
+                </Pressable>
+                <Pressable
+                  style={styles.zoomBtn}
+                  onPress={() => handleZoom('out')}>
+                  <Text style={styles.zoomText}>−</Text>
+                </Pressable>
+              </View>
+
+              {/* Floating search pill - only show on home screen */}
+              {screen === 'home' && (
+                <Pressable
+                  style={styles.searchPill}
+                  onPress={handleOpenWhereTo}>
+                  <View style={styles.searchPillInner}>
+                    <Text style={styles.searchPillIcon}>🔍</Text>
+                    <Text style={styles.searchPillText}>Where to?</Text>
+                    <Text style={styles.searchPillChevron}>›</Text>
+                  </View>
+                </Pressable>
+              )}
 
               {/* Draggable bottom sheet */}
               <BottomSheet
@@ -185,162 +149,211 @@ export default function App() {
                 enablePanDownToClose={false}
                 handleIndicatorStyle={styles.handleBar}
                 backgroundStyle={styles.sheetBg}
-                style={styles.sheetContainer}>
+                style={styles.sheetContainer}
+                topInset={insets.top + 8}>
                 <BottomSheetScrollView
                   contentContainerStyle={styles.sheetContent}
                   showsVerticalScrollIndicator={false}>
-                  {/* Favorites section */}
-                  <Text style={styles.section}>
-                    <Text style={styles.sectionIcon}>★ </Text>
-                    Favorites
-                  </Text>
+                  {screen === 'home' && (
+                    <>
+                      {/* Shortcuts moved to top */}
+                      <Text style={[styles.section, {marginTop: 0}]}>
+                          <Text style={styles.sectionIcon}>★ </Text>
+                          Shortcuts
+                        </Text>
+                      <View style={styles.quickRow}>
+                        <Pressable
+                          style={styles.quickBtn}
+                          onPress={() => setScreen('favoriteLines')}>
+                          <Text style={styles.quickText}>Transit Lines</Text>
+                        </Pressable>
 
-                  {/* 71C card */}
-                  <View style={styles.card}>
-                    <View style={styles.cardIconBubble}>
-                      <Text style={styles.cardIcon}>🚌</Text>
-                    </View>
-                    <View style={styles.cardMiddle}>
-                      <Text style={styles.cardTitle}>71C – Fifth Ave</Text>
-                      <Text style={styles.cardSub}>
-                        Fifth Ave → Tennyson Ave
+                        <Pressable
+                          style={styles.quickBtn}
+                          onPress={() => setScreen('savedLocations')}>
+                          <Text style={styles.quickText}>Saved Locations</Text>
+                        </Pressable>
+                      </View>
+
+                      {/* Favorites section */}
+                      <Text style={[styles.section, {marginTop: 16}]}>
+                        <Text style={styles.sectionIcon}>★ </Text>
+                        Favorites
                       </Text>
-                    </View>
-                    <View style={styles.cardRight}>
-                      <Text
-                        style={[
-                          styles.cardTimeValue,
-                          styles.cardTimeGreen,
-                        ]}>
-                        1 min
+
+                      {/* 71C card */}
+                      <View style={styles.card}>
+                        <View style={styles.cardIconBubble}>
+                          <Text style={styles.cardIcon}>🚌</Text>
+                        </View>
+                        <View style={styles.cardMiddle}>
+                          <Text style={styles.cardTitle}>71C – Fifth Ave</Text>
+                          <Text style={styles.cardSub}>
+                            Fifth Ave → Tennyson Ave
+                          </Text>
+                        </View>
+                        <View style={styles.cardRight}>
+                          <Text
+                            style={[
+                              styles.cardTimeValue,
+                              styles.cardTimeGreen,
+                            ]}>
+                            1 min
+                          </Text>
+                          <Text style={styles.cardTimeLabel}>Next bus</Text>
+                        </View>
+                      </View>
+
+                      {/* 71A card */}
+                      <View style={styles.card}>
+                        <View style={styles.cardIconBubble}>
+                          <Text style={styles.cardIcon}>🚌</Text>
+                        </View>
+                        <View style={styles.cardMiddle}>
+                          <Text style={styles.cardTitle}>71A – Negley</Text>
+                          <Text style={styles.cardSub}>
+                            Craig St → Centre Ave
+                          </Text>
+                        </View>
+                        <View style={styles.cardRight}>
+                          <Text
+                            style={[
+                              styles.cardTimeValue,
+                              styles.cardTimeGreen,
+                            ]}>
+                            2 min
+                          </Text>
+                          <Text style={styles.cardTimeLabel}>Next bus</Text>
+                        </View>
+                      </View>
+
+                      {/* Nearby Routes using JSON data */}
+                      <Text style={[styles.section, {marginTop: 18}]}>
+                        <Text style={styles.sectionIcon}>🚌 </Text>
+                        Nearby Routes
                       </Text>
-                      <Text style={styles.cardTimeLabel}>Next bus</Text>
-                    </View>
-                  </View>
 
-                  {/* 71A card */}
-                  <View style={styles.card}>
-                    <View style={styles.cardIconBubble}>
-                      <Text style={styles.cardIcon}>🚌</Text>
-                    </View>
-                    <View style={styles.cardMiddle}>
-                      <Text style={styles.cardTitle}>71A – Negley</Text>
-                      <Text style={styles.cardSub}>
-                        Craig St → Centre Ave
+                      {nearbyRoutes.map(route => {
+                        const displayName = route.route_name.replace(/^Route\s+\d+:\s*/, '');
+                        return (
+                          <View key={route.route_id} style={styles.card}>
+                            <View style={styles.cardIconBubble}>
+                              <Text style={styles.cardIcon}>🚌</Text>
+                            </View>
+                            <View style={styles.cardMiddle}>
+                              <Text style={styles.cardTitle}>{displayName}</Text>
+                              {route.directions[0]?.stops?.length ? (
+                                <Text style={styles.cardSub}>
+                                  {route.directions[0].stops[0].stop_name} →{' '}
+                                  {
+                                    route.directions[0].stops[
+                                      route.directions[0].stops.length - 1
+                                    ].stop_name
+                                  }
+                                </Text>
+                              ) : null}
+                            </View>
+                            <View style={styles.cardRight}>
+                              <Text
+                                style={[
+                                  styles.cardTimeValue,
+                                  styles.cardTimeAmber,
+                                ]}>
+                                Every 10 min
+                              </Text>
+                              <Text style={styles.cardTimeLabel}>Est. headway</Text>
+                            </View>
+                          </View>
+                        );
+                      })}
+
+                      {/* Other Routes from JSON */}
+                      <Text style={[styles.section, {marginTop: 18}]}>
+                        <Text style={styles.sectionIcon}>🚌 </Text>
+                        Other Routes
                       </Text>
-                    </View>
-                    <View style={styles.cardRight}>
-                      <Text
-                        style={[
-                          styles.cardTimeValue,
-                          styles.cardTimeGreen,
-                        ]}>
-                        2 min
-                      </Text>
-                      <Text style={styles.cardTimeLabel}>Next bus</Text>
-                    </View>
-                  </View>
 
-                  {/* Nearby Routes section */}
-                  <Text style={[styles.section, {marginTop: 18}]}>
-                    <Text style={styles.sectionIcon}>🚌 </Text>
-                    Nearby Routes
-                  </Text>
+                      {otherRoutes.map(route => {
+                        const displayName = route.route_name.replace(/^Route\s+\d+:\s*/, '');
+                        return (
+                          <View key={route.route_id} style={styles.otherRouteRow}>
+                            <Text style={styles.otherRouteNumber}>
+                              {route.route_id}
+                            </Text>
+                            <View style={{flex: 1}}>
+                              <Text style={styles.otherRouteTitle}>{displayName}</Text>
+                              {route.directions[0]?.stops?.length ? (
+                                <Text style={styles.otherRouteSub}>
+                                  {route.directions[0].stops[0].stop_name} →{' '}
+                                  {
+                                    route.directions[0].stops[
+                                      route.directions[0].stops.length - 1
+                                    ].stop_name
+                                  }
+                                </Text>
+                              ) : null}
+                            </View>
+                          </View>
+                        );
+                      })}
 
-                  {/* 54D card */}
-                  <View style={styles.card}>
-                    <View style={styles.cardIconBubble}>
-                      <Text style={styles.cardIcon}>🚌</Text>
-                    </View>
-                    <View style={styles.cardMiddle}>
-                      <Text style={styles.cardTitle}>54D – 5th Ave</Text>
-                      <Text style={styles.cardSub}>
-                        Blvd of Allies → Oakland
-                      </Text>
-                    </View>
-                    <View style={styles.cardRight}>
-                      <Text
-                        style={[
-                          styles.cardTimeValue,
-                          styles.cardTimeAmber,
-                        ]}>
-                        12 min
-                      </Text>
-                      <Text style={styles.cardTimeLabel}>Next bus</Text>
-                    </View>
-                  </View>
+                      <View style={{height: 20}} />
+                    </>
+                  )}
 
-                  <View style={{height: 24}} />
+                  {screen === 'whereTo' && (
+                    <>
+                      <View style={styles.headerRow}>
+                        <Pressable
+                          onPress={handleBackToHome}
+                          style={{width: 40}}>
+                          <Text style={styles.backIcon}>‹</Text>
+                        </Pressable>
 
-                  {/* Quick actions row */}
-                  <View style={styles.quickRow}>
-                    <Pressable
-                      style={styles.quickBtn}
-                      onPress={() => setScreen('favoriteLines')}>
-                      <Text style={styles.quickText}>Transit Lines</Text>
-                    </Pressable>
+                        <View style={{flex: 1, alignItems: 'center'}}>
+                          <Text style={styles.headerTitle}>Where to?</Text>
+                        </View>
 
-                    <Pressable
-                      style={styles.quickBtn}
-                      onPress={() => setScreen('savedLocations')}>
-                      <Text style={styles.quickText}>Saved Locations</Text>
-                    </Pressable>
-                  </View>
+                        <View style={{width: 40}} />
+                      </View>
 
-                  <View style={{height: 20}} />
+                      <View style={{height: 16}} />
+
+                      <View style={styles.inputPill}>
+                        <Text style={styles.inputLabel}>Current location</Text>
+                        <Text style={styles.inputValue}>4200 Fifth Ave</Text>
+                      </View>
+
+                      <View style={styles.inputPill}>
+                        <Text style={styles.inputLabel}>Destination</Text>
+                        <Text style={styles.inputPlaceholder}>Tap to choose</Text>
+                      </View>
+
+                      <Pressable style={styles.primaryBtn}>
+                        <Text style={styles.primaryBtnText}>Plan Trip</Text>
+                      </Pressable>
+
+                      <View style={{height: 16}} />
+
+                      <Text style={styles.section}>Recent</Text>
+
+                      <View style={styles.recentCard}>
+                        <Text style={styles.recentTitle}>Cathedral of Learning</Text>
+                        <Text style={styles.recentAddr}>4200 Fifth Avenue</Text>
+                      </View>
+
+                      <View style={styles.recentCard}>
+                        <Text style={styles.recentTitle}>PPG Paints Arena</Text>
+                        <Text style={styles.recentAddr}>1001 Fifth Ave</Text>
+                      </View>
+                    </>
+                  )}
                 </BottomSheetScrollView>
               </BottomSheet>
+
             </View>
           )}
 
-          {/* ---------- WHERE TO ---------- */}
-          {screen === 'whereTo' && (
-            <View style={[styles.content, {paddingTop: 40}]}>
-              <View style={styles.headerRow}>
-                <Pressable
-                  onPress={() => setScreen('home')}
-                  style={{width: 40}}>
-                  <Text style={styles.backIcon}>‹</Text>
-                </Pressable>
-
-                <View style={{flex: 1, alignItems: 'center'}}>
-                  <Text style={styles.headerTitle}>Where to?</Text>
-                </View>
-
-                <View style={{width: 40}} />
-              </View>
-
-              <View style={{height: 60}} />
-
-              <View style={styles.inputPill}>
-                <Text style={styles.inputLabel}>Current location</Text>
-                <Text style={styles.inputValue}>4200 Fifth Ave</Text>
-              </View>
-
-              <View style={styles.inputPill}>
-                <Text style={styles.inputLabel}>Destination</Text>
-                <Text style={styles.inputPlaceholder}>Tap to choose</Text>
-              </View>
-
-              <Pressable style={styles.primaryBtn}>
-                <Text style={styles.primaryBtnText}>Plan Trip</Text>
-              </Pressable>
-
-              <View style={{height: 20}} />
-
-              <Text style={styles.section}>Recent</Text>
-
-              <View style={styles.recentCard}>
-                <Text style={styles.recentTitle}>Cathedral of Learning</Text>
-                <Text style={styles.recentAddr}>4200 Fifth Avenue</Text>
-              </View>
-
-              <View style={styles.recentCard}>
-                <Text style={styles.recentTitle}>PPG Paints Arena</Text>
-                <Text style={styles.recentAddr}>1001 Fifth Ave</Text>
-              </View>
-            </View>
-          )}
 
           {/* ---------- FAVORITE LINES ---------- */}
           {screen === 'favoriteLines' && (
@@ -425,44 +438,11 @@ export default function App() {
           )}
         </SafeAreaView>
       </BottomSheetModalProvider>
->>>>>>> 452cf00 (Add proper gitignore and clean Android build artifacts)
     </GestureHandlerRootView>
   );
 }
 
 const styles = StyleSheet.create({
-<<<<<<< HEAD
-  safe: { flex: 1, backgroundColor: '#dfe6f1' },
-
-  fakeMapHeader: {
-    height: 260,
-    backgroundColor: '#c9d4e5',
-    borderBottomLeftRadius: 28,
-    borderBottomRightRadius: 28,
-    paddingHorizontal: 16,
-    paddingTop: 22,
-    paddingBottom: 24,
-  },
-  topRow: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' },
-
-  searchPill: {
-    marginTop: 40,
-    alignSelf: 'center',
-    width: '88%',
-    backgroundColor: 'white',
-    borderRadius: 999,
-    paddingVertical: 12,
-    paddingHorizontal: 18,
-    shadowColor: '#000',
-    shadowOpacity: 0.12,
-    shadowRadius: 10,
-    shadowOffset: { width: 0, height: 4 },
-    elevation: 4,
-  },
-  searchPillText: { fontSize: 16, color: '#6B7280' },
-
-  handleBar: {
-=======
   safe: {
     flex: 1,
     backgroundColor: '#dfe6f1',
@@ -477,7 +457,6 @@ const styles = StyleSheet.create({
   searchPill: {
     position: 'absolute',
     top: 50,
->>>>>>> 452cf00 (Add proper gitignore and clean Android build artifacts)
     alignSelf: 'center',
     width: '88%',
     backgroundColor: 'rgba(255,255,255,0.9)',
@@ -510,6 +489,55 @@ const styles = StyleSheet.create({
     marginLeft: 8,
   },
 
+  zoomControls: {
+    position: 'absolute',
+    right: 16,
+    top: 120,
+  },
+  zoomBtn: {
+    width: 40,
+    height: 40,
+    borderRadius: 20,
+    backgroundColor: 'white',
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginBottom: 8,
+    shadowColor: '#000',
+    shadowOpacity: 0.18,
+    shadowRadius: 4,
+    shadowOffset: {width: 0, height: 2},
+    elevation: 3,
+  },
+  zoomText: {
+    fontSize: 20,
+    fontWeight: '700',
+    color: '#111827',
+  },
+
+  whereToOverlay: {
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
+    justifyContent: 'flex-start',
+    alignItems: 'center',
+    paddingTop: 80,
+    backgroundColor: 'rgba(0,0,0,0.15)',
+  },
+  whereToCard: {
+    width: '92%',
+    backgroundColor: 'white',
+    borderRadius: 24,
+    paddingHorizontal: 16,
+    paddingVertical: 18,
+    shadowColor: '#000',
+    shadowOpacity: 0.2,
+    shadowRadius: 16,
+    shadowOffset: {width: 0, height: 8},
+    elevation: 10,
+  },
+
   // make sheet sit above the map
   sheetContainer: {
     zIndex: 50,
@@ -535,9 +563,6 @@ const styles = StyleSheet.create({
     alignSelf: 'center',
     marginVertical: 8,
   },
-<<<<<<< HEAD
-  section: { fontSize: 18, fontWeight: '600', marginBottom: 8, marginTop: 12 },
-=======
 
   section: {
     fontSize: 18,
@@ -555,7 +580,6 @@ const styles = StyleSheet.create({
     fontWeight: '500',
     color: '#6B7280',
   },
->>>>>>> 452cf00 (Add proper gitignore and clean Android build artifacts)
 
   // CARD STYLES
   card: {
@@ -617,7 +641,7 @@ const styles = StyleSheet.create({
     marginTop: 2,
   },
 
-  quickRow: { flexDirection: 'row', gap: 12, marginTop: 8 },
+  quickRow: {flexDirection: 'row', gap: 12, marginTop: 8},
   quickBtn: {
     flex: 1,
     backgroundColor: 'white',
@@ -632,14 +656,6 @@ const styles = StyleSheet.create({
   },
   quickText: {fontWeight: '600', fontSize: 14},
 
-<<<<<<< HEAD
-  content: { flex: 1, backgroundColor: '#f3f4f6' },
-  headerRow: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', paddingHorizontal: 16, paddingTop: 8 },
-  backIcon: { fontSize: 22, width: 24 },
-  headerTitle: { fontSize: 20, fontWeight: '700' },
-  plusText: { fontSize: 20, width: 24, textAlign: 'right' },
-});
-=======
   // OTHER SCREENS
   content: {padding: 16, flex: 1, backgroundColor: '#f3f4f6'},
 
@@ -699,5 +715,34 @@ const styles = StyleSheet.create({
   },
   savedTitle: {fontWeight: '700', fontSize: 16},
   savedAddr: {color: '#6B7280', marginTop: 2},
+  otherRouteRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: 'white',
+    paddingVertical: 10,
+    paddingHorizontal: 14,
+    borderRadius: 14,
+    marginTop: 8,
+    shadowColor: '#000',
+    shadowOpacity: 0.03,
+    shadowRadius: 4,
+    shadowOffset: {width: 0, height: 1},
+    elevation: 1,
+  },
+  otherRouteNumber: {
+    width: 48,
+    fontWeight: '800',
+    fontSize: 14,
+    color: '#111827',
+  },
+  otherRouteTitle: {
+    fontSize: 14,
+    fontWeight: '600',
+    color: '#111827',
+  },
+  otherRouteSub: {
+    fontSize: 12,
+    color: '#6B7280',
+    marginTop: 2,
+  },
 });
->>>>>>> 452cf00 (Add proper gitignore and clean Android build artifacts)
