@@ -1,0 +1,424 @@
+{
+  "stations": [
+    {
+      "id": "1",
+      "name": "Pierce St & Summerlea St",
+      "latitude": 40.4565066778013,
+      "longitude": -79.9323305943069,
+      "capacity": 19
+    },
+    {
+      "id": "2",
+      "name": "Eliza Furnace Trail & Swineburne St",
+      "latitude": 40.4258,
+      "longitude": -79.9534,
+      "capacity": 15
+    },
+    {
+      "id": "3",
+      "name": "Centre Ave & Addison St",
+      "latitude": 40.4446,
+      "longitude": -79.9783,
+      "capacity": 15
+    },
+    {
+      "id": "4",
+      "name": "Burns White Center at 3 Crossings",
+      "latitude": 40.4564,
+      "longitude": -79.98,
+      "capacity": 15
+    },
+    {
+      "id": "5",
+      "name": "Allegheny Station",
+      "latitude": 40.448301,
+      "longitude": -80.018007,
+      "capacity": 19
+    },
+    {
+      "id": "6",
+      "name": "10th St & Penn Ave",
+      "latitude": 40.4446526,
+      "longitude": -79.9960739,
+      "capacity": 15
+    },
+    {
+      "id": "7",
+      "name": "Liberty Ave & Gross St",
+      "latitude": 40.4595877,
+      "longitude": -79.9452035,
+      "capacity": 15
+    },
+    {
+      "id": "8",
+      "name": "Glasshouse",
+      "latitude": 40.4329,
+      "longitude": -80.003,
+      "capacity": 15
+    },
+    {
+      "id": "9",
+      "name": "South Side Trail & S 4th St",
+      "latitude": 40.431336,
+      "longitude": -79.995106,
+      "capacity": 15
+    },
+    {
+      "id": "10",
+      "name": "Zulema St & Coltart Ave",
+      "latitude": 40.436055,
+      "longitude": -79.956827,
+      "capacity": 19
+    },
+    {
+      "id": "11",
+      "name": "Ellsworth Ave & N Neville St",
+      "latitude": 40.448203,
+      "longitude": -79.947507,
+      "capacity": 15
+    },
+    {
+      "id": "12",
+      "name": "O'Hara St & University Place",
+      "latitude": 40.445117,
+      "longitude": -79.957118,
+      "capacity": 23
+    },
+    {
+      "id": "13",
+      "name": "S Bouquet Ave & Sennott St",
+      "latitude": 40.441638,
+      "longitude": -79.955764,
+      "capacity": 23
+    },
+    {
+      "id": "14",
+      "name": "Tioga St & N Homewood Ave",
+      "latitude": 40.4542263889049,
+      "longitude": -79.8975444133529,
+      "capacity": 15
+    },
+    {
+      "id": "15",
+      "name": "Ivy St & Walnut St",
+      "latitude": 40.451781,
+      "longitude": -79.932253,
+      "capacity": 15
+    },
+    {
+      "id": "16",
+      "name": "Penn Ave & Putnam St (Bakery Square)",
+      "latitude": 40.4559,
+      "longitude": -79.9153,
+      "capacity": 19
+    },
+    {
+      "id": "17",
+      "name": "Taylor St & Liberty Ave",
+      "latitude": 40.462778,
+      "longitude": -79.950868,
+      "capacity": 15
+    },
+    {
+      "id": "18",
+      "name": "21st St & Penn Ave",
+      "latitude": 40.4518,
+      "longitude": -79.9833,
+      "capacity": 19
+    },
+    {
+      "id": "19",
+      "name": "42nd St & Butler St",
+      "latitude": 40.470221,
+      "longitude": -79.96038,
+      "capacity": 15
+    },
+    {
+      "id": "20",
+      "name": "Boulevard of the Allies & Parkview Ave",
+      "latitude": 40.4344,
+      "longitude": -79.9519,
+      "capacity": 23
+    },
+    {
+      "id": "21",
+      "name": "Liberty Ave & Stanwix St",
+      "latitude": 40.4412,
+      "longitude": -80.0048,
+      "capacity": 15
+    },
+    {
+      "id": "22",
+      "name": "Forbes Ave & Market Square",
+      "latitude": 40.4407732,
+      "longitude": -80.0033121,
+      "capacity": 19
+    },
+    {
+      "id": "23",
+      "name": "North Shore Trail & Fort Duquesne Bridge",
+      "latitude": 40.4458,
+      "longitude": -80.0091,
+      "capacity": 23
+    },
+    {
+      "id": "24",
+      "name": "Penn Ave & 33rd St",
+      "latitude": 40.462,
+      "longitude": -79.9683,
+      "capacity": 11
+    },
+    {
+      "id": "25",
+      "name": "Penn Ave & S Whitfield St",
+      "latitude": 40.4616,
+      "longitude": -79.9257,
+      "capacity": 15
+    },
+    {
+      "id": "26",
+      "name": "S 27th St & Sidney St. (Southside Works)",
+      "latitude": 40.4279908,
+      "longitude": -79.9662963999999,
+      "capacity": 23
+    },
+    {
+      "id": "27",
+      "name": "W Station Square Dr & Bessemer Court",
+      "latitude": 40.4338,
+      "longitude": -80.0047,
+      "capacity": 15
+    },
+    {
+      "id": "28",
+      "name": "Fifth Ave & S Bouquet St",
+      "latitude": 40.4422,
+      "longitude": -79.9576,
+      "capacity": 23
+    },
+    {
+      "id": "29",
+      "name": "Filmore St & S Bellefield Ave",
+      "latitude": 40.445145301354,
+      "longitude": -79.9510833862304,
+      "capacity": 27
+    },
+    {
+      "id": "30",
+      "name": "Shady Ave & Ellsworth Ave",
+      "latitude": 40.4591811,
+      "longitude": -79.9219961,
+      "capacity": 15
+    },
+    {
+      "id": "31",
+      "name": "First Ave & B St",
+      "latitude": 40.435922,
+      "longitude": -79.997551,
+      "capacity": 15
+    },
+    {
+      "id": "32",
+      "name": "Ross St & Fourth Ave",
+      "latitude": 40.4377006231877,
+      "longitude": -79.9964806777709,
+      "capacity": 15
+    },
+    {
+      "id": "33",
+      "name": "Schenley Dr & Schenley Dr Ext",
+      "latitude": 40.4423713,
+      "longitude": -79.9516881,
+      "capacity": 19
+    },
+    {
+      "id": "34",
+      "name": "N Dithridge St & Centre Ave",
+      "latitude": 40.451281,
+      "longitude": -79.952982,
+      "capacity": 19
+    },
+    {
+      "id": "35",
+      "name": "Butler St & 36th St",
+      "latitude": 40.4652642,
+      "longitude": -79.9656519999999,
+      "capacity": 15
+    },
+    {
+      "id": "36",
+      "name": "Penn Ave & S Pacific Ave",
+      "latitude": 40.4646,
+      "longitude": -79.9399,
+      "capacity": 15
+    },
+    {
+      "id": "37",
+      "name": "S Negley Ave & Centre Ave",
+      "latitude": 40.4573163,
+      "longitude": -79.9343308999999,
+      "capacity": 15
+    },
+    {
+      "id": "38",
+      "name": "Allequippa St & Darragh St",
+      "latitude": 40.443591,
+      "longitude": -79.965456,
+      "capacity": 23
+    },
+    {
+      "id": "39",
+      "name": "S 12th St & E Carson St",
+      "latitude": 40.4285997029226,
+      "longitude": -79.9863711512901,
+      "capacity": 19
+    },
+    {
+      "id": "40",
+      "name": "Penn Ave & 7th St",
+      "latitude": 40.443310169091,
+      "longitude": -79.9999958798892,
+      "capacity": 19
+    },
+    {
+      "id": "41",
+      "name": "S 22nd St & Sidney St",
+      "latitude": 40.4292122212107,
+      "longitude": -79.9745345629074,
+      "capacity": 19
+    },
+    {
+      "id": "42",
+      "name": "Second Ave & Tecumseh St",
+      "latitude": 40.4088572936115,
+      "longitude": -79.9436837948181,
+      "capacity": 19
+    },
+    {
+      "id": "43",
+      "name": "Eliza St & Lytle St",
+      "latitude": 40.4134809838224,
+      "longitude": -79.9482542789794,
+      "capacity": 19
+    },
+    {
+      "id": "44",
+      "name": "Hamilton Ave & Fifth Ave",
+      "latitude": 40.457569790831,
+      "longitude": -79.9099523342468,
+      "capacity": 15
+    },
+    {
+      "id": "45",
+      "name": "N Braddock Ave & Hamilton Ave",
+      "latitude": 40.4530103612023,
+      "longitude": -79.8912036932327,
+      "capacity": 15
+    },
+    {
+      "id": "46",
+      "name": "Bennett St & N Homewood Ave",
+      "latitude": 40.4566220240671,
+      "longitude": -79.8975031968811,
+      "capacity": 15
+    },
+    {
+      "id": "47",
+      "name": "17th St & Penn Ave",
+      "latitude": 40.4496263051758,
+      "longitude": -79.9859178579666,
+      "capacity": 19
+    },
+    {
+      "id": "48",
+      "name": "Centre Ave & S Millvale Ave",
+      "latitude": 40.453211,
+      "longitude": -79.947761,
+      "capacity": 19
+    },
+    {
+      "id": "49",
+      "name": "Technology Dr & Bates St",
+      "latitude": 40.4305127832109,
+      "longitude": -79.9599889434196,
+      "capacity": 23
+    },
+    {
+      "id": "50",
+      "name": "Atwood St & Bates St",
+      "latitude": 40.4379869540702,
+      "longitude": -79.9537045276977,
+      "capacity": 19
+    },
+    {
+      "id": "51",
+      "name": "Coltart Ave & Forbes Ave",
+      "latitude": 40.4390117551208,
+      "longitude": -79.9602920330383,
+      "capacity": 18
+    },
+    {
+      "id": "52",
+      "name": "Bedford Ave & Memory Ln",
+      "latitude": 40.4483608122211,
+      "longitude": -79.9782681978561,
+      "capacity": 19
+    },
+    {
+      "id": "53",
+      "name": "Centre Ave & Heldman St",
+      "latitude": 40.4428413514563,
+      "longitude": -79.9816155947067,
+      "capacity": 19
+    },
+    {
+      "id": "54",
+      "name": "W Ohio St & Brighton Rd",
+      "latitude": 40.4524674541611,
+      "longitude": -80.0138718403198,
+      "capacity": 19
+    },
+    {
+      "id": "55",
+      "name": "Brighton Rd & Pennsylvania Ave",
+      "latitude": 40.4564024103846,
+      "longitude": -80.0153926528312,
+      "capacity": 19
+    },
+    {
+      "id": "56",
+      "name": "Rosetta St & N Aiken Ave",
+      "latitude": 40.4670182950645,
+      "longitude": -79.9352321542121,
+      "capacity": 15
+    },
+    {
+      "id": "57",
+      "name": "52nd St & Butler St",
+      "latitude": 40.4802827313896,
+      "longitude": -79.9542865670539,
+      "capacity": 19
+    },
+    {
+      "id": "58",
+      "name": "W North Ave & Federal St",
+      "latitude": 40.4552676644964,
+      "longitude": -80.0071234024383,
+      "capacity": 19
+    },
+    {
+      "id": "59",
+      "name": "Forbes Ave at TCS Hall (CMU Campus)",
+      "latitude": 40.4446540054179,
+      "longitude": -79.9475354469635,
+      "capacity": 19
+    },
+    {
+      "id": "60",
+      "name": "Wilkinsburg Park & Ride",
+      "latitude": 40.4469075070452,
+      "longitude": -79.8886448658325,
+      "capacity": 19
+    }
+  ]
+}

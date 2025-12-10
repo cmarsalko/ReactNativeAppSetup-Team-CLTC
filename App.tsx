@@ -1,5 +1,7 @@
-import React, {useState, useRef, useMemo} from 'react';
+import React, {useState, useRef, useMemo, useEffect} from 'react';
+import Geolocation from '@react-native-community/geolocation';
 import routesData from './pgh_bus_routes.json';
+import pogoData from './pogos.json';
 
 type BusStop = {
   stop_id: string;
@@ -18,6 +20,17 @@ type BusRoute = {
   route_name: string;
   directions: BusDirection[];
 };
+
+type LatLng = {
+  latitude: number;
+  longitude: number;
+};
+
+type PogoStation = LatLng & {
+  id: string;
+  name: string;
+};
+
 import {
   SafeAreaView,
   View,
@@ -35,17 +48,51 @@ import {GestureHandlerRootView} from 'react-native-gesture-handler';
 
 type Screen = 'home' | 'whereTo' | 'favoriteLines' | 'savedLocations';
 
+const INITIAL_REGION: Region = {
+  latitude: 40.4444,
+  longitude: -79.954,
+  latitudeDelta: 0.005,
+  longitudeDelta: 0.005,
+};
+
 export default function App() {
   const insets = useSafeAreaInsets();
   const [screen, setScreen] = useState<Screen>('home');
+  const [region, setRegion] = useState<Region>(INITIAL_REGION);
 
-  // Map region state
-  const [region, setRegion] = useState<Region>({
-    latitude: 40.4444,
-    longitude: -79.954,
-    latitudeDelta: 0.005,
-    longitudeDelta: 0.005,
-  });
+const [userLocation, setUserLocation] = useState<LatLng | null>(null);
+
+  useEffect(() => {
+
+    Geolocation.getCurrentPosition(
+      position => {
+        const {latitude, longitude} = position.coords;
+
+        const nextRegion: Region = {
+          latitude,
+          longitude,
+          latitudeDelta: 0.005,
+          longitudeDelta: 0.005,
+        };
+
+        setUserLocation({latitude, longitude});
+        setRegion(nextRegion);
+
+        if (mapRef.current) {
+          mapRef.current.animateToRegion(nextRegion, 500);
+        }
+      },
+      error => {
+        console.log('Error getting location', error);
+        // if it fails, you’ll stay centered on the default Pitt region
+      },
+      {
+        enableHighAccuracy: true,
+        timeout: 15000,
+        maximumAge: 10000,
+      },
+    );
+  }, []);
 
   // Map ref so we can animate zoom
   const mapRef = useRef<MapView | null>(null);
@@ -58,6 +105,68 @@ export default function App() {
     const routes: BusRoute[] = (routesData as {routes: BusRoute[]}).routes;
     const nearbyRoutes = routes.slice(0, 3);
     const otherRoutes = routes.slice(3);
+    const pogoStations: PogoStation[] = (pogoData as {stations: PogoStation[]}).stations;
+    const [showPogoStations, setShowPogoStations] = useState(false);
+
+    const handleTogglePOGOs = () => {
+      // Turning ON POGO mode
+      if (!showPogoStations) {
+        if (!pogoStations.length) {
+          return;
+        }
+
+        setShowPogoStations(true);
+
+        // Compute bounding box for all POGO stations
+        let minLat = pogoStations[0].latitude;
+        let maxLat = pogoStations[0].latitude;
+        let minLng = pogoStations[0].longitude;
+        let maxLng = pogoStations[0].longitude;
+
+        pogoStations.forEach(station => {
+          minLat = Math.min(minLat, station.latitude);
+          maxLat = Math.max(maxLat, station.latitude);
+          minLng = Math.min(minLng, station.longitude);
+          maxLng = Math.max(maxLng, station.longitude);
+        });
+
+        const centerLat = (minLat + maxLat) / 2;
+        const centerLng = (minLng + maxLng) / 2;
+
+        const latDelta = Math.max(maxLat - minLat, 0.01) * 1.5;
+        const lngDelta = Math.max(maxLng - minLng, 0.01) * 1.5;
+
+        const nextRegion: Region = {
+          latitude: centerLat,
+          longitude: centerLng,
+          latitudeDelta: latDelta,
+          longitudeDelta: lngDelta,
+        };
+
+        setRegion(nextRegion);
+        mapRef.current?.animateToRegion(nextRegion, 600);
+      } else {
+        // Turning OFF POGO mode: hide stations and zoom back to user or default
+        setShowPogoStations(false);
+
+        const fallbackRegion: Region = userLocation
+          ? {
+              latitude: userLocation.latitude,
+              longitude: userLocation.longitude,
+              latitudeDelta: 0.005,
+              longitudeDelta: 0.005,
+            }
+          : INITIAL_REGION;
+
+        setRegion(fallbackRegion);
+        mapRef.current?.animateToRegion(fallbackRegion, 600);
+      }
+    };
+
+    const favoriteRouteIds = ['R04', 'R10'];
+    const favoriteRoutes: BusRoute[] = favoriteRouteIds
+      .map(id => routes.find(route => route.route_id === id))
+      .filter((r): r is BusRoute => !!r);
 
   const handleZoom = (direction: 'in' | 'out') => {
     setRegion(prev => {
@@ -106,12 +215,21 @@ export default function App() {
                 region={region}
                 onRegionChangeComplete={setRegion}
                 mapPadding={{top: 0, right: 0, bottom: 220, left: 0}}
-                paddingAdjustmentBehavior="always">
-                <Marker
-                  coordinate={{latitude: 40.4444, longitude: -79.954}}
-                  title="Pitt Campus"
-                  description="Sample marker for prototype"
-                />
+                paddingAdjustmentBehavior="always"
+                showsUserLocation={true}
+              >
+                {showPogoStations &&
+                  pogoStations.map(station => (
+                    <Marker
+                      key={station.id}
+                      coordinate={{
+                        latitude: station.latitude,
+                        longitude: station.longitude,
+                      }}
+                      title={station.name}
+                      pinColor="#003594"
+                    />
+                  ))}
               </MapView>
 
               {/* Zoom controls */}
@@ -169,6 +287,12 @@ export default function App() {
                         </Pressable>
 
                         <Pressable
+                          style={[styles.quickBtn, showPogoStations && styles.quickBtnActive]}
+                          onPress={handleTogglePOGOs}>
+                          <Text style={styles.quickText}>POGO Stations</Text>
+                        </Pressable>
+
+                        <Pressable
                           style={styles.quickBtn}
                           onPress={() => setScreen('savedLocations')}>
                           <Text style={styles.quickText}>Saved Locations</Text>
@@ -181,51 +305,41 @@ export default function App() {
                         Favorites
                       </Text>
 
-                      {/* 71C card */}
-                      <View style={styles.card}>
-                        <View style={styles.cardIconBubble}>
-                          <Text style={styles.cardIcon}>🚌</Text>
-                        </View>
-                        <View style={styles.cardMiddle}>
-                          <Text style={styles.cardTitle}>71C – Fifth Ave</Text>
-                          <Text style={styles.cardSub}>
-                            Fifth Ave → Tennyson Ave
-                          </Text>
-                        </View>
-                        <View style={styles.cardRight}>
-                          <Text
-                            style={[
-                              styles.cardTimeValue,
-                              styles.cardTimeGreen,
-                            ]}>
-                            1 min
-                          </Text>
-                          <Text style={styles.cardTimeLabel}>Next bus</Text>
-                        </View>
-                      </View>
+                      {favoriteRoutes.map(route => {
+                        // Remove "Route 71C: " prefix from route_name
+                        const displayName = route.route_name.replace(/^Route\s+\w+:\s*/, '');
 
-                      {/* 71A card */}
-                      <View style={styles.card}>
-                        <View style={styles.cardIconBubble}>
-                          <Text style={styles.cardIcon}>🚌</Text>
-                        </View>
-                        <View style={styles.cardMiddle}>
-                          <Text style={styles.cardTitle}>71A – Negley</Text>
-                          <Text style={styles.cardSub}>
-                            Craig St → Centre Ave
-                          </Text>
-                        </View>
-                        <View style={styles.cardRight}>
-                          <Text
-                            style={[
-                              styles.cardTimeValue,
-                              styles.cardTimeGreen,
-                            ]}>
-                            2 min
-                          </Text>
-                          <Text style={styles.cardTimeLabel}>Next bus</Text>
-                        </View>
-                      </View>
+                        const firstStop =
+                          route.directions[0]?.stops?.[0] ?? null;
+                        const lastStop =
+                          route.directions[0]?.stops?.[route.directions[0].stops.length - 1] ?? null;
+
+                        return (
+                          <View key={route.route_id} style={styles.card}>
+                            <View style={styles.cardIconBubble}>
+                              <Text style={styles.cardIcon}>🚌</Text>
+                            </View>
+
+                            <View style={styles.cardMiddle}>
+                              <Text style={styles.cardTitle}>
+                                {route.route_id} – {displayName}
+                              </Text>
+
+                              {firstStop && lastStop && (
+                                <Text style={styles.cardSub}>
+                                  {firstStop.stop_name} → {lastStop.stop_name}
+                                </Text>
+                              )}
+                            </View>
+
+                            <View style={styles.cardRight}>
+                              {/* still mocked timing, you can wire this up later */}
+                              <Text style={[styles.cardTimeValue, styles.cardTimeGreen]}>1 min</Text>
+                              <Text style={styles.cardTimeLabel}>Next bus</Text>
+                            </View>
+                          </View>
+                        );
+                      })}
 
                       {/* Nearby Routes using JSON data */}
                       <Text style={[styles.section, {marginTop: 18}]}>
@@ -655,6 +769,10 @@ const styles = StyleSheet.create({
     elevation: 2,
   },
   quickText: {fontWeight: '600', fontSize: 14},
+
+  quickBtnActive: {
+    backgroundColor: '#E5E7EB',
+  },
 
   // OTHER SCREENS
   content: {padding: 16, flex: 1, backgroundColor: '#f3f4f6'},

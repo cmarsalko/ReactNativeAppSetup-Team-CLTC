@@ -3,6 +3,31 @@
   "reactNativePath": "/Users/cmarsalko/Documents/HelloNative/node_modules/react-native",
   "reactNativeVersion": "0.82",
   "dependencies": {
+    "@react-native-community/geolocation": {
+      "root": "/Users/cmarsalko/Documents/HelloNative/node_modules/@react-native-community/geolocation",
+      "name": "@react-native-community/geolocation",
+      "platforms": {
+        "ios": {
+          "podspecPath": "/Users/cmarsalko/Documents/HelloNative/node_modules/@react-native-community/geolocation/react-native-geolocation.podspec",
+          "version": "3.4.0",
+          "configurations": [],
+          "scriptPhases": []
+        },
+        "android": {
+          "sourceDir": "/Users/cmarsalko/Documents/HelloNative/node_modules/@react-native-community/geolocation/android",
+          "packageImportPath": "import com.reactnativecommunity.geolocation.GeolocationPackage;",
+          "packageInstance": "new GeolocationPackage()",
+          "buildTypes": [],
+          "libraryName": "RNCGeolocationSpec",
+          "componentDescriptors": [],
+          "cmakeListsPath": "/Users/cmarsalko/Documents/HelloNative/node_modules/@react-native-community/geolocation/android/build/generated/source/codegen/jni/CMakeLists.txt",
+          "cxxModuleCMakeListsModuleName": null,
+          "cxxModuleCMakeListsPath": null,
+          "cxxModuleHeaderName": null,
+          "isPureCxxDependency": false
+        }
+      }
+    },
     "react-native-gesture-handler": {
       "root": "/Users/cmarsalko/Documents/HelloNative/node_modules/react-native-gesture-handler",
       "name": "react-native-gesture-handler",
@@ -37,7 +62,7 @@
       "platforms": {
         "ios": {
           "podspecPath": "/Users/cmarsalko/Documents/HelloNative/node_modules/react-native-maps/react-native-maps.podspec",
-          "version": "1.26.19",
+          "version": "1.26.20",
           "configurations": [],
           "scriptPhases": []
         },
